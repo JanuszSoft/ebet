@@ -16,6 +16,7 @@ public class BetEntity {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name = "match_id")
     private MatchEntity match;
 
     @Column
@@ -24,4 +25,6 @@ public class BetEntity {
     @Column
     private String username;
 
+    public BetEntity() {
+    }
 }

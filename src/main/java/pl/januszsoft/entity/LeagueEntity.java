@@ -20,11 +20,17 @@ public class LeagueEntity implements Identifiable<Long>{
     @Column
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "leagueEntity")
     private List<RoundEntity> roundEntities;
+
+    public LeagueEntity() {}
 
     public LeagueEntity(String name){
         this.name = name;
+    }
+
+    public void addRound(RoundEntity roundEntity) {
+        roundEntities.add(roundEntity);
     }
 
 }
