@@ -1,19 +1,22 @@
 package pl.januszsoft.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pl.januszsoft.application.UC.UCLeague;
-import pl.januszsoft.feature.league.LeagueInfo;
+import pl.januszsoft.feature.league.LeagueDTO;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+
+
 @RestController
-@RequestMapping("/api/league")
+@RequestMapping("/api")
 public class ApiLeagueController {
 
     private final UCLeague ucLeague;
@@ -23,21 +26,28 @@ public class ApiLeagueController {
         this.ucLeague = ucLeague;
     }
 
-    @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public LeagueInfo createLeague(@RequestBody HashMap<String,String> payload){
+    @RequestMapping(value = "/league",method = RequestMethod.POST)
+    public LeagueDTO createLeague(@RequestBody HashMap<String,String> payload){
         String name = payload.get("name");
         long leagueId = ucLeague.createLeague(name);
         return createLeagueInfo(name, leagueId);
     }
 
-    private LeagueInfo createLeagueInfo(String name, long leagueId) {
-        LeagueInfo leagueInfo = new LeagueInfo(leagueId,name, Collections.emptyList());
-        return leagueInfo;
+    private LeagueDTO createLeagueInfo(String name, long leagueId) {
+        LeagueDTO leagueDTO = new LeagueDTO(leagueId,name, Collections.emptyList());
+        return leagueDTO;
     }
 
-    @RequestMapping("/getall")
-    public List<LeagueInfo> getAllLeague(){
+    @RequestMapping("/leagues")
+    public List<LeagueDTO> getAllLeague(){
         return ucLeague.getAllLeagues();
+    }
+
+    @RequestMapping("/league/{id}")
+    public HttpEntity<LeagueDTO> getLeagueById(@PathVariable long id){
+        LeagueDTO leagueDTO = ucLeague.getLeagueDTO(id);
+        leagueDTO.add(linkTo(methodOn(ApiLeagueController.class).getLeagueById(id)).withSelfRel());
+        return new ResponseEntity<LeagueDTO>(leagueDTO, HttpStatus.OK);
     }
 
 }

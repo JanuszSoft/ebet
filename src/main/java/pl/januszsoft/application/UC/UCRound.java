@@ -1,9 +1,9 @@
 package pl.januszsoft.application.UC;
 
-import pl.januszsoft.feature.round.RoundInfo;
+import pl.januszsoft.feature.round.RoundDTO;
 
 public interface UCRound {
 
-    void addRoundToLeague(RoundInfo roundInfo,long leagueId);
+    void addRoundToLeague(RoundDTO roundDTO, long leagueId);
 
 }

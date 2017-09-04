@@ -1,15 +1,28 @@
 package pl.januszsoft.feature.match;
 
-import org.springframework.data.repository.CrudRepository;
+import pl.januszsoft.entity.BetEntity;
 import pl.januszsoft.entity.MatchEntity;
+import pl.januszsoft.feature.bet.Bet;
+import pl.januszsoft.feature.bet.BetDTO;
 import pl.januszsoft.feature.businessObjects.BusinessObject;
-import pl.januszsoft.feature.businessObjects.Identifiable;
 
-public class Match extends BusinessObject {
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
-    public Match(MatchEntity entity, CrudRepository repository) {
-        super(entity, repository);
+public class Match extends BusinessObject<MatchEntity,Long> {
+
+    public Match(MatchEntity entity, EntityManager entityManager) {
+        super(entity, MatchEntity.class, entityManager);
     }
 
+    @Transactional
+    public Bet addBet(BetDTO betDTO){
+        BetEntity entity = new BetEntity();
+        entity.setBetResult(betDTO.getResult());
+        entity.setUsername(betDTO.getUsername());
+        entity.setMatch(attached());
+        entityManager.persist(entity);
+        return new Bet(entity,BetEntity.class,entityManager);
+    }
 
 }

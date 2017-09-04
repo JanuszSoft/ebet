@@ -1,20 +1,17 @@
 package pl.januszsoft.entity;
 
 import lombok.Data;
-import pl.januszsoft.feature.businessObjects.Identifiable;
-import pl.januszsoft.feature.league.League;
+import lombok.EqualsAndHashCode;
+import pl.januszsoft.entity.entity.AbstractEntity;
 
 import javax.persistence.*;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table
-public class RoundEntity implements Identifiable<Long> {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class RoundEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "roundEntity")
     private List<MatchEntity> matches;
@@ -26,3 +23,4 @@ public class RoundEntity implements Identifiable<Long> {
     public RoundEntity() {
     }
 }
+

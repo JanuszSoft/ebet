@@ -1,21 +1,21 @@
 package pl.januszsoft.entity;
 
 import lombok.Data;
-import pl.januszsoft.feature.businessObjects.Identifiable;
-import pl.januszsoft.feature.league.League;
+import lombok.EqualsAndHashCode;
+import pl.januszsoft.entity.entity.AbstractEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table
-public class LeagueEntity implements Identifiable<Long>{
+public class LeagueEntity extends AbstractEntity {
 
-    @Id
-    @GeneratedValue
-    @Column
-    private Long id;
 
     @Column
     private String name;

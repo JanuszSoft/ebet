@@ -3,18 +3,22 @@ package pl.januszsoft.feature.match;
 import lombok.Data;
 
 @Data
-public class MatchInfo {
+public class MatchDTO {
     long id;
     private String host;
     private String guest;
 
-    public MatchInfo(long id, String host, String guest) {
+    public MatchDTO(){
+
+    }
+
+    public MatchDTO(long id, String host, String guest) {
         this.id = id;
         this.host = host;
         this.guest = guest;
     }
 
-    public MatchInfo(String host, String guest) {
+    public MatchDTO(String host, String guest) {
         this.host = host;
         this.guest = guest;
     }
