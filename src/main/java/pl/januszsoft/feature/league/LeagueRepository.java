@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface LeagueRepository extends CrudRepository<LeagueEntity,Long>{
 
-    List<LeagueEntity> findAll();
+    List<LeagueEntity> findAllByActiveTrue();
     Optional<LeagueEntity> findOne(long id);
 }

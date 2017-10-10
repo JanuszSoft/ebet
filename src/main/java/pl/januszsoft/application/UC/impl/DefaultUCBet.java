@@ -1,73 +1,69 @@
 package pl.januszsoft.application.UC.impl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.januszsoft.application.UC.UCBet;
 import pl.januszsoft.application.utils.UC;
-import pl.januszsoft.error.ResourceNotFoundException;
+import pl.januszsoft.entity.BetEntity;
 import pl.januszsoft.feature.bet.Bet;
+import pl.januszsoft.feature.bet.BetCRUDService;
 import pl.januszsoft.feature.bet.BetDTO;
-import pl.januszsoft.feature.bet.BetService;
 import pl.januszsoft.feature.match.Match;
-import pl.januszsoft.feature.match.MatchFinder;
-import pl.januszsoft.feature.match.MatchService;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import pl.januszsoft.feature.match.MatchCRUDService;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DefaultUCBet extends UC implements UCBet {
 
-    private final BetService betService;
-    private final MatchFinder matchFinder;
+    private final BetCRUDService betCRUDService;
+    private final MatchCRUDService matchCRUDService;
 
     @Autowired
-    public DefaultUCBet(BetService betService, MatchFinder matchFinder) {
-        this.betService = betService;
-        this.matchFinder = matchFinder;
+    public DefaultUCBet(BetCRUDService betCRUDService, MatchCRUDService matchCRUDService) {
+        this.betCRUDService = betCRUDService;
+        this.matchCRUDService = matchCRUDService;
     }
 
     @Override
     @Transactional
-    public long makeBet(BetDTO betDTO) {
-       /*
-        MatchEntity match = matchService.getMatchById(betDTO.getMatchId());
-        BetEntity betEntity = betService.addBet(betDTO, match);
-        match.addBet(betDTO);
-        matchService.save(match);
-        return betEntity.getId();
-        */
+    public BetDTO makeBet(BetDTO betDTO) {
         long matchId = betDTO.getMatchId();
-        Optional<Match> match = matchFinder.find(matchId);
-        if(match.isPresent()){
-            Match match1 = match.get();
-            Bet bet = match1.addBet(betDTO);
-            return bet.getId();
-        }else{
-            throw new ResourceNotFoundException("No Match with id: " + matchId);
-        }
+        Match match = matchCRUDService.getMatchById(matchId);
+        Bet bet = match.addBet(betDTO);
+        return createBetDTO(bet.attached());
     }
 
+    private BetDTO createBetDTO(@NotNull BetEntity entity) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(entity, BetDTO.class);
+    }
 
     @Override
-    public void updateBet(BetDTO betDTO) {
-        throw new NotImplementedException();
+    @Transactional
+    public BetDTO updateBet(BetDTO betDTO) {
+        long matchId = betDTO.getMatchId();
+        Match match = matchCRUDService.getMatchById(matchId);
+        Bet bet = match.updateBet(betDTO);
+        return createBetDTO(bet.attached());
     }
+
 
     @Override
     public void deleteBetById(long id) {
-        betService.deleteBetById(id);
+        betCRUDService.deleteBetById(id);
     }
 
     @Override
     public List<BetDTO> listAllBetsByUsername(String username) {
-        throw new NotImplementedException();
+        return betCRUDService.getAllBetsByUsername(username);
     }
 
     @Override
     public BetDTO getBetById(long id) {
-        return betService.getBetById(id);
+        return betCRUDService.getBetById(id);
     }
 }

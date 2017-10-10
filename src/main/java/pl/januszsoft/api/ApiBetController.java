@@ -6,15 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.januszsoft.application.UC.UCBet;
-import pl.januszsoft.application.UC.UCLeague;
-import pl.januszsoft.entity.MatchResult;
 import pl.januszsoft.feature.bet.BetDTO;
-import pl.januszsoft.feature.league.LeagueDTO;
-
-import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -31,21 +23,32 @@ public class ApiBetController {
         this.ucBet = ucBet;
     }
 
-    @RequestMapping(value = "/bet",method = RequestMethod.POST)
-    public BetDTO createLeague(@RequestBody BetDTO betDTO){
-        long betId = ucBet.makeBet(betDTO);
-        betDTO.setBetId(betId);
-        return betDTO;
+    @PostMapping( "/bet")
+    public HttpEntity<BetDTO> createBet(@RequestBody BetDTO betDTO){
+        BetDTO createdDTO= ucBet.makeBet(betDTO);
+        createdDTO.add(linkTo(methodOn(ApiBetController.class).getBetById(createdDTO.getBetId())).withSelfRel());
+        return new ResponseEntity<>(betDTO,HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/bet/{id}",method = RequestMethod.GET)
-    public BetDTO getBetById(@PathVariable long id){
-        return ucBet.getBetById(id);
+    @GetMapping("/bet/{id}")
+    public HttpEntity<BetDTO> getBetById(@PathVariable long id){
+        BetDTO betDTO = ucBet.getBetById(id);
+        betDTO.add(linkTo(methodOn(ApiBetController.class).getBetById(betDTO.getBetId())).withSelfRel());
+        return new ResponseEntity<>(betDTO, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/bet",method = RequestMethod.GET)
-    public BetDTO getEmptyDTO(){
-        return new BetDTO(-1,-1,MatchResult.DRAW,"default");
+    @PutMapping("/bet/{id}")
+    public HttpEntity<BetDTO> updateBet(@PathVariable long id,@RequestBody BetDTO betDTO){
+        betDTO.setBetId(id);
+        BetDTO updatedBet = ucBet.updateBet(betDTO);
+        updatedBet.add(linkTo(methodOn(ApiBetController.class).getBetById(betDTO.getBetId())).withSelfRel());
+        return new ResponseEntity<>(updatedBet, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/bet/{id}")
+    public HttpStatus deleteById(@PathVariable long id){
+        ucBet.deleteBetById(id);
+        return HttpStatus.NO_CONTENT;
     }
 
 }

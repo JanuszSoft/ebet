@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 
 @Data
 @MappedSuperclass
-public class AbstractEntity implements Identifiable<Long> {
+public abstract class AbstractEntity implements Identifiable<Long> {
 
     @Id
     @GeneratedValue

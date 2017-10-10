@@ -1,28 +1,34 @@
 package pl.januszsoft.feature.bet;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.januszsoft.entity.BetEntity;
-import pl.januszsoft.entity.MatchEntity;
-import pl.januszsoft.entity.MatchResult;
 import pl.januszsoft.entity.entity.AbstractEntity;
 import pl.januszsoft.error.ResourceNotFoundException;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class BetService {
+@Transactional
+public class BetCRUDService {
 
     private final BetRepository betRepository;
+    private final BetFinder betFinder;
 
     @Autowired
-    public BetService(BetRepository betRepository) {
+    public BetCRUDService(BetRepository betRepository, BetFinder betFinder) {
         this.betRepository = betRepository;
+        this.betFinder = betFinder;
     }
 
     public void deleteBetById(long id) {
-        betRepository.findOne(id).ifPresent(AbstractEntity::deactivate);
+        //betFinder.find(id).orElseThrow(() -> new ResourceNotFoundException("No Bet with id: " + id)).delete();
+        betRepository.delete(id);
     }
 
     public BetDTO getBetById(long id) {
@@ -31,20 +37,12 @@ public class BetService {
     }
 
     private BetDTO createBetDTO(@NotNull BetEntity entity) {
-        long id = entity.getId();
-        long matchId = entity.getMatchId();
-        MatchResult result = entity.getBetResult();
-        String username = entity.getUsername();
-        return new BetDTO(id, matchId, result, username);
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(entity, BetDTO.class);
     }
 
-    public BetEntity addBet(BetDTO betDTO, MatchEntity match) {
-        BetEntity entity = new BetEntity();
-        entity.setBetResult(betDTO.getResult());
-        entity.setUsername(betDTO.getUsername());
-        entity.setMatch(match);
-        match.addBet(entity);
-        betRepository.save(entity);
-        return entity;
+    public List<BetDTO> getAllBetsByUsername(String username) {
+        List<BetEntity> allByUsername = betRepository.getAllByUsername(username);
+        return allByUsername.stream().map(this::createBetDTO).collect(Collectors.toList());
     }
 }

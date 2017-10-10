@@ -2,28 +2,28 @@ package pl.januszsoft.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import pl.januszsoft.entity.entity.AbstractEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @Entity
-@Table
 public class LeagueEntity extends AbstractEntity {
 
 
-    @Column
     private String name;
 
-    @OneToMany(mappedBy = "leagueEntity")
-    private List<RoundEntity> roundEntities;
+    @OneToMany(mappedBy = "leagueEntity",orphanRemoval = true)
+    private List<RoundEntity> roundEntities = new ArrayList<>();
 
-    public LeagueEntity() {}
 
     public LeagueEntity(String name){
         this.name = name;

@@ -2,6 +2,7 @@ package pl.januszsoft.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import pl.januszsoft.entity.entity.AbstractEntity;
 import pl.januszsoft.feature.bet.BetDTO;
 
@@ -10,30 +11,24 @@ import java.util.List;
 import java.util.Set;
 
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
 @Data
-@Table
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@Entity
 public class MatchEntity extends AbstractEntity {
 
-    @Column
     private String host;
 
-    @Column
     private String guest;
 
-    @Column
     private MatchResult result;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="round_id")
     private RoundEntity roundEntity;
 
-    @OneToMany(mappedBy = "match")
+    @OneToMany(mappedBy = "match",orphanRemoval = true)
     private List<BetEntity> bets;
-
-    public MatchEntity() {
-    }
 
     public void addBet(BetEntity betEntity) {
         bets.add(betEntity);

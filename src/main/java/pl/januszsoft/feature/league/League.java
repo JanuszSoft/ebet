@@ -1,15 +1,22 @@
 package pl.januszsoft.feature.league;
 
 import pl.januszsoft.entity.LeagueEntity;
+import pl.januszsoft.entity.MatchEntity;
 import pl.januszsoft.entity.RoundEntity;
+import pl.januszsoft.entity.entity.AbstractEntity;
+import pl.januszsoft.error.ResourceNotFoundException;
 import pl.januszsoft.feature.businessObjects.BusinessObject;
+import pl.januszsoft.feature.match.MatchDTO;
 import pl.januszsoft.feature.round.Round;
 import pl.januszsoft.feature.round.RoundDTO;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class League extends BusinessObject<LeagueEntity,Long> {
+@Transactional
+public class League extends BusinessObject<LeagueEntity> {
 
 
     public League(LeagueEntity entity, EntityManager entityManager) {
@@ -20,11 +27,44 @@ public class League extends BusinessObject<LeagueEntity,Long> {
         return attached().getRoundEntities().size();
     }
 
+    public Round getRoundWithNumber(final int roundNumber){
+        List<RoundEntity> roundEntities = attached().getRoundEntities();
+        if(roundEntities.size()<=roundNumber){
+            throw new ResourceNotFoundException("No round with number "+roundNumber);
+        }
+        RoundEntity roundEntity = roundEntities.get(convertHumanNumberToITNumber(roundNumber));
+        return new Round(roundEntity,entityManager);
+    }
+
     @Transactional
-    public Round addRound(RoundDTO roundDTO){
+    public Round addNewRoundWithMatches(RoundDTO roundDTO){
+        RoundEntity roundEntity = createRoundEntity();
+        entityManager.persist(roundEntity);
+        Round newRound = new Round(roundEntity, entityManager);
+        List<MatchDTO> matchDTOList = roundDTO.getMatchDTOList();
+        matchDTOList.forEach(newRound::addMatch);
+        return newRound;
+    }
+
+    private RoundEntity createRoundEntity() {
         RoundEntity roundEntity = new RoundEntity();
         roundEntity.setLeagueEntity(attached());
-        entityManager.persist(roundEntity);
-        return new Round(roundEntity);
+        return roundEntity;
     }
+
+    public List<Round> getAllRounds() {
+        return attached().getRoundEntities().stream().map(e->new Round(e,entityManager)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(){
+        getAllRounds().forEach(Round::delete);
+        removeAllRounds();
+        super.delete();
+    }
+
+    private void removeAllRounds() {
+        getAllRounds().clear();
+    }
+
 }

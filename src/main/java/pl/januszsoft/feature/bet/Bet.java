@@ -5,9 +5,9 @@ import pl.januszsoft.feature.businessObjects.BusinessObject;
 
 import javax.persistence.EntityManager;
 
-public class Bet extends BusinessObject<BetEntity,Long>{
+public class Bet extends BusinessObject<BetEntity>{
 
-    public Bet(BetEntity entity, Class<BetEntity> clazz, EntityManager entityManager) {
-        super(entity, clazz, entityManager);
+    public Bet(BetEntity entity, EntityManager entityManager) {
+        super(entity, BetEntity.class, entityManager);
     }
 }

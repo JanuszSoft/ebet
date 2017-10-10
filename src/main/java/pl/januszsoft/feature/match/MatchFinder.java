@@ -17,7 +17,7 @@ public class MatchFinder implements Finder<Match,Long> {
     @Override
     public Optional<Match> find(Long id) {
         MatchEntity matchEntity = entityManager.find(MatchEntity.class,id);
-        if(matchEntity!=null){
+        if(matchEntity!=null && matchEntity.isActive()){
             return Optional.of(new Match(matchEntity,entityManager));
         }
         return Optional.empty();

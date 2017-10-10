@@ -1,10 +1,13 @@
 package pl.januszsoft.feature.businessObjects;
 
-import javax.persistence.EntityManager;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import pl.januszsoft.entity.entity.AbstractEntity;
 
-public abstract class BusinessObject<T extends Identifiable<K>,K extends Serializable> {
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+
+
+public abstract class BusinessObject<T extends AbstractEntity> {
 
     private T entity;
 
@@ -18,11 +21,20 @@ public abstract class BusinessObject<T extends Identifiable<K>,K extends Seriali
         this.entityManager = entityManager;
     }
 
+    @Transactional
     public T attached() {
         return entityManager.find(clazz,entity.getId());
     }
 
-    public K getId(){
+    public void delete(){
+        attached().deactivate();
+    }
+
+    public long getId(){
         return attached().getId();
+    }
+
+    protected int convertHumanNumberToITNumber(long n) {
+        return (int)n-1;
     }
 }

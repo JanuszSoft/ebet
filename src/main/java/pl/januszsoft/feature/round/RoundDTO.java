@@ -1,31 +1,28 @@
 package pl.januszsoft.feature.round;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.hateoas.ResourceSupport;
 import pl.januszsoft.feature.match.MatchDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class RoundDTO {
-    private long id;
-    private List<MatchDTO> matchDTOList;
+@NoArgsConstructor
+public class RoundDTO extends ResourceSupport {
 
-    public RoundDTO(){
+    @JsonProperty("id")
+    private long roundId;
 
-    }
+    private long leagueId;
+
+    @JsonProperty("matchList")
+    private List<MatchDTO> matchDTOList  = new ArrayList<>();
 
     public RoundDTO(List<MatchDTO> matchDTOList) {
         this.matchDTOList = matchDTOList;
     }
 
-    public RoundDTO(int number, List<MatchDTO> matchDTOList) {
-      //  this.number = number;
-        this.matchDTOList = matchDTOList;
-    }
-
-    public RoundDTO(long id, int number, List<MatchDTO> matchDTOList) {
-        this.id = id;
-        //this.number = number;
-        this.matchDTOList = matchDTOList;
-    }
 }

@@ -1,24 +1,22 @@
 package pl.januszsoft.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pl.januszsoft.application.UC.UCRound;
 import pl.januszsoft.feature.match.MatchDTO;
 import pl.januszsoft.feature.round.RoundDTO;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api")
 public class ApiRoundController {
-
 
     private final UCRound ucRound;
 
@@ -27,18 +25,51 @@ public class ApiRoundController {
         this.ucRound = ucRound;
     }
 
-    @RequestMapping(value = "/round",method = RequestMethod.POST)
-    public void addRoundToLeague(@RequestBody Map<String,Object> payload){
-        long leagueId = Long.valueOf((String)payload.get("leagueId"));
-        ArrayList<LinkedHashMap> matches = (ArrayList<LinkedHashMap>) payload.get("matches");
-        List<MatchDTO> matchDTOList = matches.stream().map(this::createMatchInfo).collect(Collectors.toList());
-        RoundDTO info = new RoundDTO(matchDTOList);
-        ucRound.addRoundToLeague(info,leagueId);
+    @PostMapping("/league/{leagueId}/round")
+    public HttpEntity<RoundDTO> addRoundToLeague(@RequestBody RoundDTO roundDTO, @PathVariable long leagueId){
+        RoundDTO newRound = ucRound.addRoundToLeague(roundDTO, leagueId);
+        newRound.add(linkTo(methodOn(ApiRoundController.class).getRoundById(newRound.getRoundId())).withSelfRel());
+        return new ResponseEntity<>(newRound, HttpStatus.OK);
     }
 
-    private MatchDTO createMatchInfo(LinkedHashMap match){
-        String host = (String)match.get("host");
-        String guest = (String)match.get("guest");
-        return new MatchDTO(host,guest);
+    @RequestMapping(value = "/league/{leagueId}/round/{roundNumber}",method = RequestMethod.GET)
+    public HttpEntity<RoundDTO> getRoundFromLeague(@PathVariable long leagueId, @PathVariable int roundNumber){
+        RoundDTO roundDTO = ucRound.getRoundFromLeague(leagueId, roundNumber);
+        roundDTO.getMatchDTOList().forEach(this::addLinkToMatch);
+        roundDTO.add(linkTo(methodOn(ApiLeagueController.class).getLeagueById(leagueId)).withRel("league"));
+        return createHttpEntity(roundDTO);
+    }
+
+    @RequestMapping(value = "/league/{leagueId}/rounds",method = RequestMethod.GET)
+    public HttpEntity<List<RoundDTO>> getAllRoundsFromLeague(@PathVariable long leagueId){
+        List<RoundDTO> rounds = ucRound.getAllRoundsFromLeague(leagueId);
+        rounds.forEach(e->e.add(linkTo(methodOn(ApiRoundController.class).getRoundById(e.getRoundId())).withSelfRel()));
+        rounds.forEach(e->e.getMatchDTOList().forEach(this::addLinkToMatch));
+        return new ResponseEntity<>(rounds,HttpStatus.OK);
+    }
+
+    private void addLinkToMatch(MatchDTO matchDTO) {
+        matchDTO.add(linkTo(methodOn(ApiMatchController.class).getMatchById(matchDTO.getMatchId())).withSelfRel());
+    }
+
+    @GetMapping("/round/{roundId}")
+    public HttpEntity<RoundDTO> getRoundById(@PathVariable long roundId){
+        RoundDTO roundDTO = ucRound.getRoundById(roundId);
+        roundDTO.add(linkTo(methodOn(ApiLeagueController.class).getLeagueById(roundDTO.getLeagueId())).withRel("league"));
+        roundDTO.add(linkTo(methodOn(ApiRoundController.class).getRoundById(roundId)).withSelfRel());
+        return createHttpEntity(roundDTO);
+    }
+
+    private HttpEntity<RoundDTO> createHttpEntity(RoundDTO roundDTO) {
+        long roundId = roundDTO.getRoundId();
+        roundDTO.add(linkTo(methodOn(ApiRoundController.class).getRoundById(roundId)).withSelfRel());
+        roundDTO.getMatchDTOList().forEach(e-> e.add(linkTo(methodOn(ApiMatchController.class).getMatchById(e.getMatchId())).withSelfRel()));
+        return new ResponseEntity<>(roundDTO, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/round/{id}")
+    public HttpStatus deleteRoundById(@PathVariable long id){
+        ucRound.removeRoundById(id);
+        return HttpStatus.OK;
     }
 }
