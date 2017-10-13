@@ -3,12 +3,11 @@ package pl.januszsoft.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import pl.januszsoft.entity.entity.AbstractEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +15,14 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
+@Where(clause = "active=true")
 public class LeagueEntity extends AbstractEntity {
 
 
     private String name;
 
     @OneToMany(mappedBy = "leagueEntity",orphanRemoval = true)
+    @Where(clause = "active=true")
     private List<RoundEntity> roundEntities = new ArrayList<>();
 
 

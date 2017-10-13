@@ -3,10 +3,11 @@ package pl.januszsoft.feature.league;
 import org.springframework.stereotype.Service;
 import pl.januszsoft.application.utils.Finder;
 import pl.januszsoft.entity.LeagueEntity;
-import pl.januszsoft.entity.entity.AbstractEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,5 +29,13 @@ public class LeagueFinder implements Finder<League,Long>{
     @Override
     public boolean exist(Long id) {
         return entityManager.find(LeagueEntity.class,id) != null;
+    }
+
+    public List<League> findAll() {
+        Query query = entityManager.createQuery("SELECT e from LeagueEntity e");
+        return (List<League>) query.getResultList()
+                .stream()
+                .map(e -> new League((LeagueEntity) e, entityManager))
+                .collect(Collectors.toList());
     }
 }

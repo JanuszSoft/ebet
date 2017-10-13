@@ -11,12 +11,10 @@ import javax.transaction.Transactional;
 public class MatchCRUDService {
 
     private MatchFinder matchFinder;
-    private final MatchRepository matchRepository;
 
     @Autowired
-    public MatchCRUDService(MatchFinder matchFinder, MatchRepository matchRepository) {
+    public MatchCRUDService(MatchFinder matchFinder) {
         this.matchFinder = matchFinder;
-        this.matchRepository = matchRepository;
     }
 
     public Match getMatchById(long id){
@@ -24,7 +22,6 @@ public class MatchCRUDService {
     }
 
     public void removeMatchById(long id) {
-        //matchFinder.find(id).orElseThrow(() -> new ResourceNotFoundException("No match with id: " + id)).delete();
-        matchRepository.delete(id);
+        matchFinder.find(id).orElseThrow(() -> new ResourceNotFoundException("No match with id: " + id)).delete();
     }
 }

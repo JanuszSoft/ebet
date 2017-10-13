@@ -3,18 +3,19 @@ package pl.januszsoft.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import pl.januszsoft.entity.entity.AbstractEntity;
 import pl.januszsoft.feature.bet.BetDTO;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
+@Where(clause = "active=true")
 public class MatchEntity extends AbstractEntity {
 
     private String host;
@@ -25,9 +26,11 @@ public class MatchEntity extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="round_id")
+    @Where(clause = "active=true")
     private RoundEntity roundEntity;
 
     @OneToMany(mappedBy = "match",orphanRemoval = true)
+    @Where(clause = "active=true")
     private List<BetEntity> bets;
 
     public void addBet(BetEntity betEntity) {

@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.januszsoft.entity.BetEntity;
-import pl.januszsoft.entity.entity.AbstractEntity;
 import pl.januszsoft.error.ResourceNotFoundException;
 
 import javax.transaction.Transactional;
@@ -27,8 +26,7 @@ public class BetCRUDService {
     }
 
     public void deleteBetById(long id) {
-        //betFinder.find(id).orElseThrow(() -> new ResourceNotFoundException("No Bet with id: " + id)).delete();
-        betRepository.delete(id);
+        betFinder.find(id).orElseThrow(() -> new ResourceNotFoundException("No Bet with id: " + id)).delete();
     }
 
     public BetDTO getBetById(long id) {

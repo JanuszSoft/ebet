@@ -11,12 +11,10 @@ import javax.transaction.Transactional;
 public class RoundCRUDService {
 
     private final RoundFinder roundFinder;
-    private final RoundRepository roundRepository;
 
     @Autowired
-    public RoundCRUDService(RoundFinder roundFinder, RoundRepository roundRepository) {
+    public RoundCRUDService(RoundFinder roundFinder) {
         this.roundFinder = roundFinder;
-        this.roundRepository = roundRepository;
     }
 
     public Round getRoundById(long id){
@@ -24,11 +22,6 @@ public class RoundCRUDService {
     }
 
     public void removeById(long id) {
-        //roundFinder.find(id).orElseThrow(()->new ResourceNotFoundException("No round with id: " + id)).delete();
-        if(roundRepository.exists(id)){
-            roundRepository.delete(id);
-        }else{
-            throw new ResourceNotFoundException("No round with  id: "+id);
-        }
+        roundFinder.find(id).orElseThrow(() -> new ResourceNotFoundException("No round with id: " + id)).delete();
     }
 }
