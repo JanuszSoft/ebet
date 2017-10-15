@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.januszsoft.application.UC.UCLeague;
 import pl.januszsoft.entity.LeagueEntity;
-import pl.januszsoft.feature.league.*;
+import pl.januszsoft.feature.league.League;
+import pl.januszsoft.feature.league.LeagueCRUDService;
+import pl.januszsoft.feature.league.LeagueCreator;
+import pl.januszsoft.feature.league.LeagueDTO;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +30,9 @@ public class DefaultUCLeague implements UCLeague{
 
 
     @Override
-    public long createLeague(String name) {
+    public LeagueDTO createLeague(String name) {
         League league = leagueCreator.createLeague(name);
-        return league.getId();
+        return mapToDTO(league.attached());
     }
 
     @Override

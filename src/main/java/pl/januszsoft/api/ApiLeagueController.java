@@ -7,10 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.januszsoft.application.UC.UCLeague;
-import pl.januszsoft.feature.league.League;
 import pl.januszsoft.feature.league.LeagueDTO;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -31,8 +29,8 @@ public class ApiLeagueController {
     @PostMapping("/league")
     public HttpEntity<LeagueDTO> createLeague(@RequestBody LeagueDTO leagueDTO){
         String name = leagueDTO.getName();
-        long leagueId = ucLeague.createLeague(name);
-        LeagueDTO newLeague = createLeagueDTOWithNoRounds(name,leagueId);
+        LeagueDTO newLeagueDTO = ucLeague.createLeague(name);
+        LeagueDTO newLeague = createLeagueDTOWithNoRounds(name, newLeagueDTO.getLeagueId());
         return new ResponseEntity(newLeague,HttpStatus.OK);
     }
 

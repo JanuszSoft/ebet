@@ -40,7 +40,7 @@ public class BetCRUDService {
     }
 
     public List<BetDTO> getAllBetsByUsername(String username) {
-        List<BetEntity> allByUsername = betRepository.getAllByUsername(username);
+        List<BetEntity> allByUsername = betRepository.getAllByUsernameAndActiveTrue(username);
         return allByUsername.stream().map(this::createBetDTO).collect(Collectors.toList());
     }
 }

@@ -8,9 +8,10 @@ import java.util.List;
 @Transactional
 public interface UCLeague {
 
-    long createLeague(String name);
+    LeagueDTO createLeague(String name);
     void removeLeague(long id);
     LeagueDTO getLeagueDTO(long id);
     List<LeagueDTO> getAllLeagues();
+
 
 }
