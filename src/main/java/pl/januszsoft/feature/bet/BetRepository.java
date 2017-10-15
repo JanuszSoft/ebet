@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface BetRepository extends CrudRepository<BetEntity, Long> {
 
     Optional<BetEntity> findOne(long id);
-    List<BetEntity> getAllByUsername(String username);
+
+    List<BetEntity> getAllByUsernameAndActiveTrue(String username);
 
 }
