@@ -63,4 +63,12 @@ public class ApiLeagueController {
         return HttpStatus.NO_CONTENT;
     }
 
+    @PutMapping("league/{id}")
+    public HttpEntity<LeagueDTO> updateLeagueName(@PathVariable long id, @RequestBody LeagueDTO leagueDTO) {
+        String name = leagueDTO.getName();
+        LeagueDTO updatedLeagueDTO = ucLeague.updateLeagueName(id, name);
+        updatedLeagueDTO.add(linkTo(methodOn(ApiLeagueController.class).getLeagueById(id)).withSelfRel());
+        updatedLeagueDTO.add(linkTo(methodOn(ApiRoundController.class).getAllRoundsFromLeague(id)).withRel("All rounds"));
+        return new ResponseEntity<>(updatedLeagueDTO, HttpStatus.OK);
+    }
 }

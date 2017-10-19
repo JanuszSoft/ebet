@@ -35,4 +35,14 @@ public class Match extends BusinessObject<MatchEntity> {
         entityManager.persist(entity);
         return new Bet(entity,entityManager);
     }
+
+    public void updateHost(String host) {
+        attached().setHost(host);
+    }
+
+    public void updateGuest(String guest) {
+        attached().setGuest(guest);
+    }
+
+
 }

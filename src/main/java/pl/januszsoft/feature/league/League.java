@@ -1,9 +1,7 @@
 package pl.januszsoft.feature.league;
 
 import pl.januszsoft.entity.LeagueEntity;
-import pl.januszsoft.entity.MatchEntity;
 import pl.januszsoft.entity.RoundEntity;
-import pl.januszsoft.entity.entity.AbstractEntity;
 import pl.januszsoft.error.ResourceNotFoundException;
 import pl.januszsoft.feature.businessObjects.BusinessObject;
 import pl.januszsoft.feature.match.MatchDTO;
@@ -67,4 +65,7 @@ public class League extends BusinessObject<LeagueEntity> {
         getAllRounds().clear();
     }
 
+    public void updateName(String name) {
+        attached().setName(name);
+    }
 }

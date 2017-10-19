@@ -11,11 +11,13 @@ import pl.januszsoft.feature.league.LeagueCRUDService;
 import pl.januszsoft.feature.league.LeagueCreator;
 import pl.januszsoft.feature.league.LeagueDTO;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class DefaultUCLeague implements UCLeague{
 
     private final LeagueCreator leagueCreator;
@@ -53,6 +55,13 @@ public class DefaultUCLeague implements UCLeague{
                 .map(League::attached)
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public LeagueDTO updateLeagueName(long id, String name) {
+        League league = leagueCRUDService.getLeagueById(id);
+        league.updateName(name);
+        return mapToDTO(league.attached());
     }
 
     private LeagueDTO mapToDTO(@NotNull LeagueEntity league) {

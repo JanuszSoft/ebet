@@ -10,6 +10,8 @@ public interface UCMatch  {
     MatchDTO getMatchById(long id);
     MatchDTO getMatchFromLeagueAndRound(long leagueId,int roundNumber, int matchNumber);
     MatchDTO addMatchToRound(long leagueId,int roundNumber,MatchDTO match);
+
+    MatchDTO updateMatch(MatchDTO matchDTO);
     void removeMatchById(long id);
 
 }

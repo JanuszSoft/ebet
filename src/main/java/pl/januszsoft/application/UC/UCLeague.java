@@ -13,5 +13,6 @@ public interface UCLeague {
     LeagueDTO getLeagueDTO(long id);
     List<LeagueDTO> getAllLeagues();
 
+    LeagueDTO updateLeagueName(long id, String name);
 
 }

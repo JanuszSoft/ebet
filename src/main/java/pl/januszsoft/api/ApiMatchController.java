@@ -48,4 +48,13 @@ public class ApiMatchController {
         return HttpStatus.NO_CONTENT;
     }
 
+    @PutMapping("/match/{id}")
+    public HttpEntity updateMatch(@PathVariable long id, @RequestBody MatchDTO matchDTO) {
+        matchDTO.setMatchId(id);
+        MatchDTO newMatch = ucMatch.updateMatch(matchDTO);
+        newMatch.add(linkTo(methodOn(ApiMatchController.class).getMatchById(matchDTO.getMatchId())).withSelfRel());
+        return new ResponseEntity(newMatch, HttpStatus.OK);
+
+    }
+
 }

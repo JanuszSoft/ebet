@@ -9,8 +9,8 @@ import pl.januszsoft.entity.MatchEntity;
 import pl.januszsoft.feature.league.League;
 import pl.januszsoft.feature.league.LeagueCRUDService;
 import pl.januszsoft.feature.match.Match;
-import pl.januszsoft.feature.match.MatchDTO;
 import pl.januszsoft.feature.match.MatchCRUDService;
+import pl.januszsoft.feature.match.MatchDTO;
 import pl.januszsoft.feature.round.Round;
 import pl.januszsoft.feature.round.RoundCRUDService;
 
@@ -55,6 +55,15 @@ public class DefaultUCMatch extends UC implements UCMatch{
     }
 
     @Override
+    public MatchDTO updateMatch(MatchDTO matchDTO) {
+        long id = matchDTO.getMatchId();
+        Match match = matchCRUDService.getMatchById(id);
+        match.updateHost(matchDTO.getHost());
+        match.updateGuest(matchDTO.getGuest());
+        return mapToDTO(match);
+    }
+
+    @Override
     public void removeMatchById(long id) {
         matchCRUDService.removeMatchById(id);
     }
@@ -62,5 +71,9 @@ public class DefaultUCMatch extends UC implements UCMatch{
     private MatchDTO mapToDTO(MatchEntity matchEntity) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(matchEntity,MatchDTO.class);
+    }
+
+    private MatchDTO mapToDTO(Match match) {
+        return mapToDTO(match.attached());
     }
 }
