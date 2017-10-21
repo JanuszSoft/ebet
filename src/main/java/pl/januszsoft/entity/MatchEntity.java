@@ -1,18 +1,18 @@
 package pl.januszsoft.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 import pl.januszsoft.entity.entity.AbstractEntity;
 import pl.januszsoft.feature.bet.BetDTO;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Where(clause = "active=true")
@@ -31,7 +31,7 @@ public class MatchEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "match",orphanRemoval = true)
     @Where(clause = "active=true")
-    private List<BetEntity> bets;
+    private Set<BetEntity> bets;
 
     public void addBet(BetEntity betEntity) {
         bets.add(betEntity);
@@ -45,5 +45,6 @@ public class MatchEntity extends AbstractEntity {
         addBet(betEntity);
         return betEntity;
     }
+
 
 }

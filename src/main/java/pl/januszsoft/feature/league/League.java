@@ -10,7 +10,9 @@ import pl.januszsoft.feature.round.RoundDTO;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -26,7 +28,8 @@ public class League extends BusinessObject<LeagueEntity> {
     }
 
     public Round getRoundWithNumber(final int roundNumber){
-        List<RoundEntity> roundEntities = attached().getRoundEntities();
+        Set<RoundEntity> entitiesSet = attached().getRoundEntities();
+        List<RoundEntity> roundEntities = new ArrayList<>(entitiesSet);
         if(roundEntities.size()<=roundNumber){
             throw new ResourceNotFoundException("No round with number "+roundNumber);
         }

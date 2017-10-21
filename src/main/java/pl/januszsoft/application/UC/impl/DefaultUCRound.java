@@ -16,6 +16,7 @@ import pl.januszsoft.feature.round.RoundDTO;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,11 +71,12 @@ public class DefaultUCRound extends UC implements UCRound{
     private RoundDTO mapToDTO(RoundEntity round) {
         ModelMapper mapper = new ModelMapper();
         RoundDTO roundDTO = mapper.map(round, RoundDTO.class);
-        roundDTO.setMatchDTOList(mapMatchList(round.getMatches()));
+        Set<MatchEntity> matches = round.getMatches();
+        roundDTO.setMatchDTOList(mapMatchList(matches));
         return roundDTO;
     }
 
-    private List<MatchDTO> mapMatchList(List<MatchEntity> matchEntities) {
+    private List<MatchDTO> mapMatchList(Set<MatchEntity> matchEntities) {
         ModelMapper mapper = new ModelMapper();
         return matchEntities.stream().map(e -> mapper.map(e, MatchDTO.class)).collect(Collectors.toList());
     }

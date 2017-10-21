@@ -1,17 +1,17 @@
 package pl.januszsoft.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 import pl.januszsoft.entity.entity.AbstractEntity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Where(clause = "active=true")
@@ -19,7 +19,7 @@ public class RoundEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "roundEntity",orphanRemoval = true)
     @Where(clause = "active=true")
-    private List<MatchEntity> matches = new ArrayList<>();
+    private Set<MatchEntity> matches = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "league_id")
@@ -28,6 +28,7 @@ public class RoundEntity extends AbstractEntity {
     public void addMatch(MatchEntity matchEntity){
         matches.add(matchEntity);
     }
+
 
 }
 

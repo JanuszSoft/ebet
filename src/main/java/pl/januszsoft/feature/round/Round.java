@@ -10,7 +10,9 @@ import pl.januszsoft.feature.match.MatchDTO;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Configurable
@@ -39,7 +41,8 @@ public class Round extends BusinessObject<RoundEntity> {
 
     @Transactional
     public Match getMatchWithNumber(long matchNumber) {
-        List<MatchEntity> matchEntities = attached().getMatches();
+        Set<MatchEntity> matches = attached().getMatches();
+        List<MatchEntity> matchEntities = new ArrayList<>(matches);
         if(matchEntities.size()>matchNumber){
             throw new ResourceNotFoundException("No match with number "+matchNumber);
         }
