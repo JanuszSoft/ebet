@@ -25,7 +25,7 @@ public class RoundEntity extends AbstractEntity {
     @JoinColumn(name = "league_id")
     private LeagueEntity leagueEntity;
 
-    public void addMatch(MatchEntity matchEntity){
+    public void addMatch(MatchEntity matchEntity) {
         matches.add(matchEntity);
     }
 

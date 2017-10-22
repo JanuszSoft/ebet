@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.januszsoft.application.UC.UCMatch;
 import pl.januszsoft.application.utils.UC;
 import pl.januszsoft.entity.MatchEntity;
+import pl.januszsoft.entity.MatchResult;
 import pl.januszsoft.feature.league.League;
 import pl.januszsoft.feature.league.LeagueCRUDService;
 import pl.januszsoft.feature.match.Match;
@@ -66,6 +67,13 @@ public class DefaultUCMatch extends UC implements UCMatch{
     @Override
     public void removeMatchById(long id) {
         matchCRUDService.removeMatchById(id);
+    }
+
+    @Override
+    public MatchDTO setMatchResult(long id, MatchResult matchResult) {
+        Match match = matchCRUDService.getMatchById(id);
+        match.setResult(matchResult);
+        return mapToDTO(match);
     }
 
     private MatchDTO mapToDTO(MatchEntity matchEntity) {

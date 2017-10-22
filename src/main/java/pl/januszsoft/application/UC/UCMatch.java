@@ -1,5 +1,6 @@
 package pl.januszsoft.application.UC;
 
+import pl.januszsoft.entity.MatchResult;
 import pl.januszsoft.feature.match.MatchDTO;
 
 import javax.transaction.Transactional;
@@ -14,4 +15,5 @@ public interface UCMatch  {
     MatchDTO updateMatch(MatchDTO matchDTO);
     void removeMatchById(long id);
 
+    MatchDTO setMatchResult(long id, MatchResult matchResult);
 }

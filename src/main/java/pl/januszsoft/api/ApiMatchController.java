@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.januszsoft.application.UC.UCMatch;
+import pl.januszsoft.entity.MatchResult;
 import pl.januszsoft.feature.match.MatchDTO;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -54,7 +55,13 @@ public class ApiMatchController {
         MatchDTO newMatch = ucMatch.updateMatch(matchDTO);
         newMatch.add(linkTo(methodOn(ApiMatchController.class).getMatchById(matchDTO.getMatchId())).withSelfRel());
         return new ResponseEntity(newMatch, HttpStatus.OK);
-
     }
 
+    @PostMapping("/match/{id}")
+    public HttpEntity setMatchResult(@PathVariable long id, @RequestBody MatchResult matchResult) {
+        MatchDTO matchDTO = ucMatch.setMatchResult(id, matchResult);
+        matchDTO.add(linkTo(methodOn(ApiMatchController.class).getMatchById(matchDTO.getMatchId())).withSelfRel());
+        return new ResponseEntity(matchDTO, HttpStatus.OK);
+
+    }
 }
