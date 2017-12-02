@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 import pl.januszsoft.entity.entity.AbstractEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.HashSet;
@@ -22,11 +23,11 @@ public class LeagueEntity extends AbstractEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "leagueEntity",orphanRemoval = true)
+    @OneToMany(mappedBy = "leagueEntity", orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = "active=true")
     private Set<RoundEntity> roundEntities = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = "active=true")
     private LeagueUsersResultsEntity leagueUsersResultsEntity = new LeagueUsersResultsEntity();
 
