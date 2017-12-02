@@ -8,6 +8,7 @@ import pl.januszsoft.entity.entity.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,10 @@ public class LeagueEntity extends AbstractEntity {
     @OneToMany(mappedBy = "leagueEntity",orphanRemoval = true)
     @Where(clause = "active=true")
     private Set<RoundEntity> roundEntities = new HashSet<>();
+
+    @OneToOne
+    @Where(clause = "active=true")
+    private LeagueUsersResultsEntity leagueUsersResultsEntity = new LeagueUsersResultsEntity();
 
     public LeagueEntity(String name){
         this.name = name;
