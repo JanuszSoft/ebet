@@ -69,7 +69,6 @@ public class DefaultUCLeague implements UCLeague{
         PropertyMap<LeagueEntity,LeagueDTO> propertyMap = new PropertyMap<LeagueEntity, LeagueDTO>() {
             @Override
             protected void configure() {
-                map().setNumberOfRounds(source.getRoundEntities().size());
                 map().setLeagueId(source.getId());
                 map().setName(source.getName());
             }

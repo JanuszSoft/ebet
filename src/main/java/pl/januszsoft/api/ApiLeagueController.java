@@ -35,7 +35,7 @@ public class ApiLeagueController {
     }
 
     private LeagueDTO createLeagueDTOWithNoRounds(String name, long leagueId) {
-        LeagueDTO leagueDTO = new LeagueDTO(leagueId,name, 0);
+        LeagueDTO leagueDTO = new LeagueDTO(leagueId, name);
         leagueDTO.add(linkTo(methodOn(ApiLeagueController.class).getLeagueById(leagueId)).withSelfRel());
         leagueDTO.add(linkTo(methodOn(ApiRoundController.class).getAllRoundsFromLeague(leagueId)).withRel("All rounds"));
         return leagueDTO;
