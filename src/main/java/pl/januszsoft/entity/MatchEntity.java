@@ -22,7 +22,7 @@ public class MatchEntity extends AbstractEntity {
 
     private String guest;
 
-    private MatchResult result;
+    private MatchResult result = MatchResult.NOT_SET;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="round_id")

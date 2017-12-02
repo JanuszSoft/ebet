@@ -4,6 +4,7 @@ import pl.januszsoft.entity.LeagueEntity;
 import pl.januszsoft.entity.RoundEntity;
 import pl.januszsoft.error.ResourceNotFoundException;
 import pl.januszsoft.feature.businessObjects.BusinessObject;
+import pl.januszsoft.feature.leagueUsersResults.LeagueUsersResult;
 import pl.januszsoft.feature.match.MatchDTO;
 import pl.januszsoft.feature.round.Round;
 import pl.januszsoft.feature.round.RoundDTO;
@@ -37,7 +38,6 @@ public class League extends BusinessObject<LeagueEntity> {
         return new Round(roundEntity,entityManager);
     }
 
-    @Transactional
     public Round addNewRoundWithMatches(RoundDTO roundDTO){
         RoundEntity roundEntity = createRoundEntity();
         entityManager.persist(roundEntity);
@@ -55,6 +55,10 @@ public class League extends BusinessObject<LeagueEntity> {
 
     public List<Round> getAllRounds() {
         return attached().getRoundEntities().stream().map(e->new Round(e,entityManager)).collect(Collectors.toList());
+    }
+
+    public LeagueUsersResult getLeagueUsersResult() {
+        return new LeagueUsersResult(attached().getLeagueUsersResultsEntity(), entityManager);
     }
 
     @Override

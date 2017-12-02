@@ -7,9 +7,12 @@ import pl.januszsoft.error.ResourceNotFoundException;
 import pl.januszsoft.feature.bet.Bet;
 import pl.januszsoft.feature.bet.BetDTO;
 import pl.januszsoft.feature.businessObjects.BusinessObject;
+import pl.januszsoft.feature.round.Round;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Transactional
 public class Match extends BusinessObject<MatchEntity> {
@@ -48,5 +51,20 @@ public class Match extends BusinessObject<MatchEntity> {
         attached().setGuest(guest);
     }
 
+    public long getLeagueId() {
+        return getRound().getLeagueId();
+    }
 
+    public Round getRound() {
+        return new Round(attached().getRoundEntity(), entityManager);
+    }
+
+
+    public MatchResult getResult() {
+        return attached().getResult();
+    }
+
+    public Set<Bet> getBets() {
+        return attached().getBets().stream().map(e -> new Bet(e, entityManager)).collect(Collectors.toSet());
+    }
 }

@@ -9,11 +9,11 @@ import pl.januszsoft.entity.MatchEntity;
 import pl.januszsoft.entity.MatchResult;
 import pl.januszsoft.feature.league.League;
 import pl.januszsoft.feature.league.LeagueCRUDService;
+import pl.januszsoft.feature.leagueUsersResults.UsersResultUpdateService;
 import pl.januszsoft.feature.match.Match;
 import pl.januszsoft.feature.match.MatchCRUDService;
 import pl.januszsoft.feature.match.MatchDTO;
 import pl.januszsoft.feature.round.Round;
-import pl.januszsoft.feature.round.RoundCRUDService;
 
 import javax.transaction.Transactional;
 
@@ -22,14 +22,14 @@ import javax.transaction.Transactional;
 public class DefaultUCMatch extends UC implements UCMatch{
 
     private final MatchCRUDService matchCRUDService;
-    private final RoundCRUDService roundCRUDService;
     private final LeagueCRUDService leagueCRUDService;
+    private final UsersResultUpdateService usersResultUpdateService;
 
     @Autowired
-    public DefaultUCMatch(MatchCRUDService matchCRUDService, RoundCRUDService roundCRUDService, LeagueCRUDService leagueCRUDService) {
+    public DefaultUCMatch(MatchCRUDService matchCRUDService, LeagueCRUDService leagueCRUDService, UsersResultUpdateService usersResultUpdateService) {
         this.matchCRUDService = matchCRUDService;
-        this.roundCRUDService = roundCRUDService;
         this.leagueCRUDService = leagueCRUDService;
+        this.usersResultUpdateService = usersResultUpdateService;
     }
 
 
@@ -73,6 +73,7 @@ public class DefaultUCMatch extends UC implements UCMatch{
     public MatchDTO setMatchResult(long id, MatchResult matchResult) {
         Match match = matchCRUDService.getMatchById(id);
         match.setResult(matchResult);
+        usersResultUpdateService.updateUsersResult(match);
         return mapToDTO(match);
     }
 
