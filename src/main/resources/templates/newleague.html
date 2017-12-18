@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ebet</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<!--/*@thymesVar id="league" type="pl.januszsoft.feature.league.LeagueDTO"*/-->
+<form th:object="${league}" method="post">
+    Nazwa <textarea rows="1" name="name" th:field="*{name}" title="Nazwa" autofocus="autofocus"
+                    required="required"></textarea>
+    <input type="submit" value="Dodaj"/>
+
+
+</form>
+</body>
+</html>
